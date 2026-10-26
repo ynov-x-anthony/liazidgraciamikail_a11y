@@ -1,44 +1,60 @@
+import { useId } from 'react'
 import './App.css'
 
-// Mission : ce blog fonctionne, mais tout est construit en <div>. Rends-le
-// sémantique : landmarks, hiérarchie de titres, vrai bouton, vrai label.
-
 function App() {
+  const emailId = useId()
+
   return (
     <div className="page">
-      <div className="header">
+      {/* En-tête et navigation principale */}
+      <header>
         <div className="logo">DevBlog</div>
-        <div className="nav">
-          <div className="nav-link">Accueil</div>
-          <div className="nav-link">Articles</div>
-          <div className="nav-link">Contact</div>
-        </div>
-      </div>
+        <nav aria-label="Navigation principale">
+          <a href="#accueil" className="nav-link">Accueil</a>
+          <a href="#articles" className="nav-link">Articles</a>
+          <a href="#contact" className="nav-link">Contact</a>
+        </nav>
+      </header>
 
-      <div className="main">
-        <div className="article">
-          <div className="title">Pourquoi apprendre TypeScript en 2026</div>
-          <div className="meta">Publié le 3 mars 2026</div>
-          <div className="small-title">Un typage qui rassure</div>
+      {/* Contenu principal de la page */}
+      <main>
+        <article>
+          <h1>Pourquoi apprendre TypeScript en 2026</h1>
+          <p className="meta">Publié le 3 mars 2026</p>
+          
+          <h2>Un typage qui rassure</h2>
           <p>TypeScript attrape une classe entière de bugs avant même d'exécuter le code...</p>
-          <div className="small-title">Un écosystème mature</div>
+          
+          <h2>Un écosystème mature</h2>
           <p>La quasi-totalité des librairies JS fournissent désormais leurs types...</p>
-        </div>
+        </article>
 
-        <div className="like-btn" onClick={() => alert("Merci pour le like !")}>
+        {/* Bouton like accessible */}
+        <button 
+          type="button" 
+          className="like-btn" 
+          onClick={() => alert("Merci pour le like !")}
+        >
           👍 J'aime cet article
-        </div>
+        </button>
 
-        <div className="newsletter">
-          <div className="small-title">Reste informé</div>
-          <input type="email" placeholder="ton@email.fr" />
-          <div className="submit-btn" onClick={() => alert('Inscription envoyée')}>
-            S'inscrire
-          </div>
-        </div>
-      </div>
+        {/* Section Newsletter avec formulaire et label associé via useId() */}
+        <section className="newsletter">
+          <h2>Reste informé</h2>
+          <form onSubmit={(e) => { e.preventDefault(); alert('Inscription envoyée'); }}>
+            <label htmlFor={emailId}>Ton adresse email</label>
+            <input id={emailId} type="email" placeholder="ton@email.fr" />
+            <button type="submit" className="submit-btn">
+              S'inscrire
+            </button>
+          </form>
+        </section>
+      </main>
 
-      <div className="footer">© 2026 DevBlog</div>
+      {/* Pied de page */}
+      <footer>
+        <p>© 2026 DevBlog</p>
+      </footer>
     </div>
   )
 }
