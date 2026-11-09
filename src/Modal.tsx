@@ -2,19 +2,60 @@ import { useEffect, useRef } from 'react'
 
 type Props = { onClose: () => void }
 
-// Mission : en Tab, le focus doit rester PIÉGÉ dans cette modale (focus
-// trap), et revenir sur le bouton qui l'a ouverte à la fermeture.
-// Pour l'instant, Tab s'échappe vers la page derrière. Rien n'est fait.
-
 export default function Modal({ onClose }: Props) {
   const ref = useRef<HTMLDivElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
+    // 1. Mémorise l'élément qui avait le focus avant l'ouverture
+    previousFocusRef.current = document.activeElement as HTMLElement
+
+    const container = ref.current
+    if (!container) return
+
+    // Sélection de tous les éléments focusables de la modale
+    const focusableSelector =
+      'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    const focusableElements = container.querySelectorAll<HTMLElement>(focusableSelector)
+
+    const firstElement = focusableElements[0]
+    const lastElement = focusableElements[focusableElements.length - 1]
+
+    // Place le focus sur le premier élément de la modale dès l'ouverture
+    firstElement?.focus()
+
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+      // Gestion de la touche Échap
+      if (e.key === 'Escape') {
+        onClose()
+        return
+      }
+
+      // Implémentation du Focus Trap sur la touche Tab
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          // Shift + Tab sur le premier élément -> saute vers le dernier
+          if (document.activeElement === firstElement) {
+            e.preventDefault()
+            lastElement?.focus()
+          }
+        } else {
+          // Tab sur le dernier élément -> saute vers le premier
+          if (document.activeElement === lastElement) {
+            e.preventDefault()
+            firstElement?.focus()
+          }
+        }
+      }
     }
+
     document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      // 2. Restaure le focus sur le bouton déclencheur à la fermeture
+      previousFocusRef.current?.focus()
+    }
   }, [onClose])
 
   return (
@@ -26,7 +67,9 @@ export default function Modal({ onClose }: Props) {
           <option>Français</option>
           <option>English</option>
         </select>
-        <button onClick={onClose}>Fermer</button>
+        <button type="button" onClick={onClose}>
+          Fermer
+        </button>
       </div>
     </div>
   )
