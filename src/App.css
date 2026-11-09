@@ -1,12 +1,8 @@
-/* Suppression de *:focus { outline: none; } */
-
-/* Style du focus visible au clavier */
 :focus-visible {
   outline: 2px solid #005fcc;
   outline-offset: 2px;
 }
 
-/* Style pour le Skip Link */
 .skip-link {
   position: absolute;
   top: -100px;
@@ -59,4 +55,27 @@
   display: flex; 
   flex-direction: column; 
   gap: .6rem; 
+}
+
+:focus-visible {
+  outline: 2px solid #005fcc;
+  outline-offset: 2px;
+}
+
+.badge {
+  color: #1f1f1f;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.badge--success {
+  background: #d7f5df;
+}
+
+.badge--danger {
+  background: #fcdede;
 }
